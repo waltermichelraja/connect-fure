@@ -23,25 +23,25 @@ class board:
             self.board.append(ss)
     
 #i dont know how to format stuffs you do it
-def flowcheck(bo, pl):
+def flowcheck(bo, pl,i):
     if i==1:  
         bo.board[pl-1].push(2)
     else:
         bo.board[pl-1].push(3)
     while bo.board[pl-1]:
         c=1
-        bo.board[pl-1].peak() #bro i stop here i am goin to sleep
+        bo.board[pl-1].peek() #bro i stop here i am goin to sleep
 
 i=1
 b=board()
 while True:
     if i==1:
         p=int(input("enter"))
-        flowcheck(b, p)
+        flowcheck(b, p, i)
         i+=1
     else:
         p1=int(input("enter"))
-        flowcheck(b, p1)
+        flowcheck(b, p1, i)
         i-=1
      
 
