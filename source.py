@@ -30,4 +30,5 @@ def is_draw(board):
 
 
 def win_condition(board, piece):
-    pass # to do...
+    pass # bro its already 10 pm iam goin to sleep and i want to know what the hell is that for loop 
+#that shit is crazy ad i cant understant how that thing work or i use this green to get that green
