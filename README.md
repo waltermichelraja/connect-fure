@@ -1,2 +1,2 @@
-# connect4
+## connect4
 a simple board game
