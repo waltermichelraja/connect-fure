@@ -37,6 +37,15 @@ def win_condition(board, piece):
             row-=1
         elif row==0 or board[row][col]!=piece:
             return False""" # col => [to be passed -> ()]
+     #horizontal
+    """while c<4:
+        if(board[row][col]==piece):
+            c+=1
+            if n=1:
+             col+=1 else : col-=1
+        elif board[row][col]!=piece:
+            col-=c+1
+    """
 
     for r in range(ROWS):
         for c in range(COLUMNS-3):
