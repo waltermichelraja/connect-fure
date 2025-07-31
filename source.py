@@ -31,12 +31,12 @@ def is_draw(board):
 
 def win_condition(board, piece):
     #for vertical here i use that row for easy access also in this func i need the col of user input
-    c=1
+    """c=1
     while c<4:
         if(board[row][col]==piece):
             c+=1
             row-=1
         elif row==0 or board[row][col]!=piece:
             return False
-    if c==4 cout<<player won return
+    if c==4 cout<<player won return"""
         
