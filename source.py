@@ -1,11 +1,11 @@
 ROWS=8
 COLUMNS=8
-EMPTY=["1","2","3","4","5","6","7","8"]
-PLAYER_SYMBOLS=['X', 'O']
+EMPTY="."
+PLAYER_SYMBOLS=["X", "O"]
 
 
 def create_board():
-    return [[EMPTY[i] for _ in range(COLUMNS)] for i in range(ROWS)]
+    return [[EMPTY for _ in range(COLUMNS)] for i in range(ROWS)]
 
 def print_board(board):
     print("\n "+" ".join(str(i+1) for i in range(COLUMNS)))
@@ -19,7 +19,7 @@ def is_valid_column(board, col):
 def get_next_open_row(board, col):
     for row in reversed(range(ROWS)):
         if board[row][col]==EMPTY:
-            return row#this one
+            return row
     return None
 
 def drop_piece(board, row, col, piece):
@@ -30,13 +30,28 @@ def is_draw(board):
 
 
 def win_condition(board, piece):
-    #for vertical here i use that row for easy access also in this func i need the col of user input
     """c=1
     while c<4:
         if(board[row][col]==piece):
             c+=1
             row-=1
         elif row==0 or board[row][col]!=piece:
-            return False
-    if c==4 cout<<player won return"""
+            return False""" # col => [to be passed -> ()]
+
+    for r in range(ROWS):
+        for c in range(COLUMNS-3):
+            if (board[r][c]==piece and
+                board[r][c+1]==piece and
+                board[r][c+2]==piece and
+                board[r][c+3]==piece):
+                return True # horizontal
+
+    for c in range(COLUMNS):
+        for r in range(ROWS-3):
+            if (board[r][c]==piece and
+                board[r+1][c]==piece and
+                board[r+2][c]==piece and
+                board[r+3][c]==piece):
+                return True # vertical
+
         
