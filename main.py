@@ -13,21 +13,22 @@ def main():
         piece=PLAYER_SYMBOLS[player]
 
         try:
-            col=int(input(f"player {player+1} ({piece}), choose column (0-{COLUMNS-1}): "))
+            col=int(input(f"player {player+1} ({piece}), choose column (1-{COLUMNS}): "))
         except ValueError:
             print("invalid input... please enter a column number...")
             continue
 
-        if not is_valid_column(board, col):
+        if not is_valid_column(board, col-1):
             print("column full or out of range... try again!")
             continue
 
-        row=get_next_open_row(board, col)
-        drop_piece(board, row, col, piece)
+        row=get_next_open_row(board, col-1)
+        drop_piece(board, row, col-1, piece)
         print_board(board)
 
         if win_condition(board, piece):
-            pass # to do => [win_condition() -> source.py]
+            print (piece ,"won")
+            break
 
         turn+=1
 
