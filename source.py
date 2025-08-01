@@ -8,7 +8,7 @@ def create_board():
     return [[EMPTY for _ in range(COLUMNS)] for i in range(ROWS)]
 
 def print_board(board):
-    print("\n "+" ".join(str(i+1) for i in range(COLUMNS)))
+    print("\n  "+" ".join(str(i+1) for i in range(COLUMNS)))
     for row in board:
         print(" |"+"|".join(row)+"|")
     print()
@@ -62,5 +62,21 @@ def win_condition(board, piece):
                 board[r+2][c]==piece and
                 board[r+3][c]==piece):
                 return True # vertical
+            
+    for r in range(0,5 ):
+        for c in range(0,5):
+            if (board[r][c]==piece and
+                board[r+1][c+1]==piece and
+                board[r+2][c+2]==piece and
+                board[r+3][c+3]==piece):
+                return True
+    for r in range(0,5):
+        for c in range(3,8):
+            if (board[r][c]==piece and
+                board[r+1][c-1]==piece and
+                board[r+2][c-2]==piece and
+                board[r+3][c-3]==piece):
+                return True
+
 
         
