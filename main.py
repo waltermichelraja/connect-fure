@@ -27,9 +27,11 @@ def main():
         print_board(board)
 
         if win_condition(board, piece):
-            print (piece ,"won")
-            break
-
+            print(f"player {player+1} [{piece}] wins!")
+            game_over=True
+        elif is_draw(board):
+            print(f"game ends in a draw!")
+            game_over=True
         turn+=1
 
 if __name__=="__main__":
