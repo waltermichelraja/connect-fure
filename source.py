@@ -8,7 +8,7 @@ def create_board():
     return [[EMPTY for _ in range(COLUMNS)] for i in range(ROWS)]
 
 def print_board(board):
-    print("\n "+" ".join(str(i+1) for i in range(COLUMNS)))
+    print("\n  "+" ".join(str(i+1) for i in range(COLUMNS)))
     for row in board:
         print(" |"+"|".join(row)+"|")
     print()
@@ -30,6 +30,7 @@ def is_draw(board):
 
 
 def win_condition(board, piece):
+    # vertical
     """c=1
     while c<4:
         if(board[row][col]==piece):
@@ -37,21 +38,34 @@ def win_condition(board, piece):
             row-=1
         elif row==0 or board[row][col]!=piece:
             return False""" # col => [to be passed -> ()]
-
+    # horizontal
+    """while c<4:
+        if(board[row][col]==piece):
+            c+=1
+            if n=1:
+             col+=1 else : col-=1
+        elif board[row][col]!=piece:
+            col-=c+1
+    """
     for r in range(ROWS):
         for c in range(COLUMNS-3):
-            if (board[r][c]==piece and
-                board[r][c+1]==piece and
-                board[r][c+2]==piece and
-                board[r][c+3]==piece):
-                return True # horizontal
+            if all(board[r][c+i]==piece for i in range(4)):
+                return True
 
     for c in range(COLUMNS):
         for r in range(ROWS-3):
-            if (board[r][c]==piece and
-                board[r+1][c]==piece and
-                board[r+2][c]==piece and
-                board[r+3][c]==piece):
-                return True # vertical
+            if all(board[r+i][c]==piece for i in range(4)):
+                return True
+            
+    for r in range(ROWS-3):
+        for c in range(COLUMNS-3):
+            if all(board[r+i][r+i]==piece for i in range(4)):
+                return True
+            
+    for r in range(ROWS-3):
+        for c in range(ROWS-5, COLUMNS):
+            if all(board[r+i][c-i]==piece for i in range(4)):
+                return True
+    
+    return False
 
-        
