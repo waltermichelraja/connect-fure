@@ -11,3 +11,4 @@
 | `is_draw()`           | checks if the games ends in a draw                |
 | `win_condition()`     | checks if the game ends with a result             |
 | `main()`              | controls the flow of the game                     |
+
