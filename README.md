@@ -1,8 +1,8 @@
 # connect4
-> a simple board game with cl interface
+> a simple command line interface for connect-4 board game...
 
 | Method                | Description                                       |
-|:---------------------:|:-------------------------------------------------:|
+|:----------------------|:--------------------------------------------------|
 | `create_board()`      | creates board layout                              |
 | `print_board()`       | prints the board layout                           |
 | `is_valid_column()`   | checks if column is free                          |
