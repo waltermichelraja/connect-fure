@@ -1,13 +1,17 @@
+import uuid
+
 ROWS=8
 COLUMNS=8
 EMPTY="."
 PLAYER_SYMBOLS=["X", "O"]
 
-class GameLogic:
+class Connect4:
     def __init__(self):
+        self.id=str(uuid.uuid4())
         self.board=[[EMPTY for _ in range(COLUMNS)] for _ in range(ROWS)]
         self.turn=0
         self.winner=None
+        self.status=1
 
     def is_valid_column(self, col):
         return 0<=col<COLUMNS and self.board[0][col]==EMPTY
@@ -44,8 +48,25 @@ class GameLogic:
             for c in range(3, COLUMNS):
                 if all(self.board[r+i][c-i]==piece for i in range(4)):
                     return True
-
         return False
     
     def play(self, col):
-        pass #to do....
+        if self.status!=1:
+            return False # finished game
+        if not self.is_valid_column(col):
+            return False # invalid column
+
+        row=self.get_next_open_row(col)
+        piece=PLAYER_SYMBOLS[self.turn%2]
+        self.drop_piece(row, col, piece)
+
+        if self.win_condition(piece):
+            self.status=0 # game over
+            self.winner=piece
+        elif self.is_draw():
+            self.status=-1 # game draw
+        else:
+            self.turn+=1
+        return True, "played successfully" # played... [by current player]
+    
+    
