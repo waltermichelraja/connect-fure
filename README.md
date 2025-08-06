@@ -1,6 +1,7 @@
 # connect4
 
 > command line interface for connect-4 board game...
+
 | Method                | Description                                       |
 |:----------------------|:--------------------------------------------------|
 | `create_board()`      | creates board layout                              |
