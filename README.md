@@ -1,5 +1,6 @@
 # connect4
-> a simple command line interface for connect-4 board game...
+
+> command line interface for connect-4 board game...
 
 | Method                | Description                                       |
 |:----------------------|:--------------------------------------------------|
