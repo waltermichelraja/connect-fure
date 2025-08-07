@@ -3,6 +3,7 @@ from logic import Connect4, PLAYER_SYMBOLS
 
 app=Flask(__name__)
 games=dict() # {}
+users=dict() # {}
 
 @app.route("/")
 def root():
