@@ -54,6 +54,15 @@ def play_game(game_id):
         "status": game.status
     })
 
+@app.route("/game/<game_id>/restart", methods=["POST"])
+def restart_game(game_id):
+    game=games.get(game_id)
+    if not game:
+        return jsonify({"error": "game not found"}), 404
+    game.__init__()
+    games[game.id]=game
+    return jsonify({"message": "game restarted", "board": game.board})
+
 
 if __name__=="__main__":
     app.run(debug=True)
