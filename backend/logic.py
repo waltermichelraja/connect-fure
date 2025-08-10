@@ -5,8 +5,8 @@ COLUMNS=8
 EMPTY="."
 PLAYER_SYMBOLS=["X", "O"]
 STATUS_IN_PROGRESS=1
-STATUS_GAME_OVER=0
-STATUS_DRAW=-1
+STATUS_DRAW=0
+STATUS_GAME_OVER=-1
 
 
 class User:
@@ -46,12 +46,12 @@ class Connect4:
         self.board[row][col]=piece
 
     def is_draw(self):
-        return all(self.board[0][col]==EMPTY for col in range(COLUMNS))
+        return all(self.board[0][col]!=EMPTY for col in range(COLUMNS))
 
     def win_condition(self, piece):
         for r in range(ROWS):
             for c in range(COLUMNS-3):
-                if all(self.board[r][c + i]==piece for i in range(4)):
+                if all(self.board[r][c+i]==piece for i in range(4)):
                     return True
                 
         for c in range(COLUMNS):
@@ -71,9 +71,9 @@ class Connect4:
         return False
 
     def play(self, player_id, col):
-        if self.status==STATUS_IN_PROGRESS:
+        if self.status!=STATUS_IN_PROGRESS:
             return False, "game already finished"
-        if self.players[self.turn % 2]==player_id:
+        if self.players[self.turn % 2]!=player_id:
             return False, "not your turn"
         if not self.is_valid_column(col):
             return False, "invalid column"
@@ -88,8 +88,10 @@ class Connect4:
         if self.win_condition(piece):
             self.status=STATUS_GAME_OVER
             self.winner=player_id
+            return True, f"player {player_id} wins"
         elif self.is_draw():
             self.status=STATUS_DRAW
+            return True, "game is a draw"
         else:
             self.turn+=1
 
