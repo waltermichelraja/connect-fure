@@ -8,13 +8,11 @@ STATUS_IN_PROGRESS=1
 STATUS_DRAW=0
 STATUS_GAME_OVER=-1
 
-
 class User:
     def __init__(self, username):
         self.id=str(uuid.uuid4())
         self.username=username
         self.games=[]
-
 
 class Connect4:
     def __init__(self, player_id1, player_id2):
