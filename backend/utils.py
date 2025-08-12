@@ -1,8 +1,5 @@
 from models import PLAYER_SYMBOLS
 
-def error_response(message, status):
-    return {"error": message}, status
-
 def game_state(game, message=None):
     return {
         "id": game.id,
@@ -15,3 +12,6 @@ def game_state(game, message=None):
         "move_history": game.move_history,
         **({"message": message} if message else {})
     }
+
+def error_response(message, status):
+    return {"error": message}, status

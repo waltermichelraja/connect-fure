@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from models import Connect4
-from dump import games, users
+from db import games_collection, users_collection
 from utils import *
 import logging
 
@@ -14,53 +14,89 @@ def create_game():
 
     if not (p1 and p2):
         return error_response("both player IDs required", 400)
-    if p1 not in users or p2 not in users:
+
+    if not users_collection.find_one({"_id": p1}) or not users_collection.find_one({"_id": p2}):
         return error_response("invalid player ID(s)", 400)
 
     game=Connect4(p1, p2)
-    games[game.id]=game
-    users[p1].games.append(game.id)
-    users[p2].games.append(game.id)
+    games_collection.insert_one({
+        "_id": game.id,
+        "players": game.players,
+        "board": game.board,
+        "turn": game.turn,
+        "winner": game.winner,
+        "status": game.status,
+        "move_history": game.move_history
+    })
+    users_collection.update_one({"_id": p1}, {"$push": {"games": game.id}})
+    users_collection.update_one({"_id": p2}, {"$push": {"games": game.id}})
 
     logging.info(f"game created: {game.id} between {p1} and {p2}")
     return game_state(game)
 
+
 @game_bp.route("/game/<game_id>", methods=["GET"])
 def fetch_game(game_id):
-    game=games.get(game_id)
-    if not game:
+    game_doc=games_collection.find_one({"_id": game_id})
+    if not game_doc:
         return error_response("game not found", 404)
+
+    game=Connect4.from_dict(game_doc)
     return game_state(game)
+
 
 @game_bp.route("/game/<game_id>/play", methods=["POST"])
 def play_game(game_id):
-    game=games.get(game_id)
-    if not game:
+    game_doc=games_collection.find_one({"_id": game_id})
+    if not game_doc:
         return error_response("game not found", 404)
 
     data=request.json
     player_id=data.get("player_id")
     try:
         col=int(data.get("column"))
-    except (ValueError, TypeError):
+    except(ValueError, TypeError):
         return error_response("column must be an integer", 400)
 
-    if player_id not in users:
+    if not users_collection.find_one({"_id": player_id}):
         return error_response("invalid player ID", 400)
 
-    success, message=game.play(player_id, col)
+    game=Connect4.from_dict(game_doc)
+    success, message = game.play(player_id, col)
     if not success:
         return error_response(message, 400)
-
+    
+    games_collection.update_one(
+        {"_id": game.id},
+        {"$set": {
+            "board": game.board,
+            "turn": game.turn,
+            "winner": game.winner,
+            "status": game.status,
+            "move_history": game.move_history
+        }}
+    )
     logging.info(f"move: player {player_id} in game {game_id} => column {col}")
     return game_state(game, message)
 
+
 @game_bp.route("/game/<game_id>/restart", methods=["POST"])
 def restart_game(game_id):
-    game=games.get(game_id)
-    if not game:
+    game_doc=games_collection.find_one({"_id": game_id})
+    if not game_doc:
         return error_response("game not found", 404)
 
+    game=Connect4.from_dict(game_doc)
     game.reset_board()
+    games_collection.update_one(
+        {"_id": game.id},
+        {"$set": {
+            "board": game.board,
+            "turn": game.turn,
+            "winner": game.winner,
+            "status": game.status,
+            "move_history": game.move_history
+        }}
+    )
     logging.info(f"game restarted: {game_id}")
     return game_state(game, "game restarted")
