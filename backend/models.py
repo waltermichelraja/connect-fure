@@ -10,7 +10,7 @@ STATUS_GAME_OVER=-1
 
 class User:
     def __init__(self, username):
-        self.id= str(uuid.uuid4())
+        self.id=str(uuid.uuid4())
         self.username=username
         self.games=[]
 
@@ -18,7 +18,7 @@ class User:
 class Connect4:
     def __init__(self, player1_id, player2_id, board=None, turn=0,
                  status=STATUS_IN_PROGRESS, move_history=None, winner=None, game_id=None):
-        self.id=game_id
+        self.id=game_id or str(uuid.uuid4())
         self.players=[player1_id, player2_id]
         self.board=board or [[EMPTY for _ in range(COLUMNS)] for _ in range(ROWS)]
         self.turn=turn
@@ -97,16 +97,16 @@ class Connect4:
     def play(self, player_id, col):
         if self.status!=STATUS_IN_PROGRESS:
             return False, "game already finished"
-        if self.players[self.turn % 2] != player_id:
+        if self.players[self.turn%2]!=player_id:
             return False, "not your turn."
         if not self.is_valid_column(col):
             return False, "invalid column."
         
-        row = self.get_next_open_row(col)
+        row=self.get_next_open_row(col)
         if row is None:
             return False, "column is full."
 
-        piece = "X" if self.turn%2==0 else "O"
+        piece="X" if self.turn%2==0 else "O"
         self.drop_piece(row, col, piece)
         self.move_history.append((player_id, col))
 
@@ -118,5 +118,5 @@ class Connect4:
         if self.is_board_full():
             self.status=STATUS_DRAW
             return True, "game is a draw!"
-        self.turn += 1
+        self.turn+=1
         return True, "move successful!"
