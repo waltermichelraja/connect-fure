@@ -9,11 +9,21 @@ STATUS_DRAW=0
 STATUS_GAME_OVER=-1
 
 class User:
-    def __init__(self, username):
+    def __init__(self, email, username, password):
         self.id=str(uuid.uuid4())
+        self.email=email
         self.username=username
+        self.password=password
         self.games=[]
-
+    
+    def to_dict(self):
+        return {
+            "_id": self.id,
+            "email": self.email,
+            "username": self.username,
+            "password": self.password,
+            "games": self.games
+        }
 
 class Connect4:
     def __init__(self, player1_id, player2_id, board=None, turn=0,
