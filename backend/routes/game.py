@@ -19,15 +19,7 @@ def create_game():
         return error_response("invalid player ID(s)", 400)
 
     game=Connect4(p1, p2)
-    games_collection.insert_one({
-        "_id": game.id,
-        "players": game.players,
-        "board": game.board,
-        "turn": game.turn,
-        "winner": game.winner,
-        "status": game.status,
-        "move_history": game.move_history
-    })
+    games_collection.insert_one(game.to_dict())
     users_collection.update_one({"_id": p1}, {"$push": {"games": game.id}})
     users_collection.update_one({"_id": p2}, {"$push": {"games": game.id}})
 
@@ -62,7 +54,7 @@ def play_game(game_id):
         return error_response("invalid player ID", 400)
 
     game=Connect4.from_dict(game_doc)
-    success, message = game.play(player_id, col)
+    success, message=game.play(player_id, col)
     if not success:
         return error_response(message, 400)
     
