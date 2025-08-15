@@ -5,8 +5,6 @@ from utils import *
 import logging
 
 user_bp=Blueprint("user", __name__)
-users_collection.create_index("email", unique=True)
-users_collection.create_index("username", unique=True)
 
 @user_bp.route("/user", methods=["POST"])
 def create_user():

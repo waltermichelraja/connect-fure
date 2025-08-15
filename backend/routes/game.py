@@ -15,7 +15,7 @@ def create_game():
     if not (p1 and p2):
         return error_response("both player IDs required", 400)
 
-    if not users_collection.find_one({"_id": p1}) or not users_collection.find_one({"_id": p2}):
+    if not users_collection.find_one({"_id": p1}) or not users_collection.find_one({"_id": p2}) or p1==p2:
         return error_response("invalid player ID(s)", 400)
 
     game=Connect4(p1, p2)
