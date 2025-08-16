@@ -1,7 +1,9 @@
 import re
 import dns.resolver
 from werkzeug.security import generate_password_hash
-from db import users_collection
+from datetime import datetime
+
+from db import users_collection, logs_collection
 from models import PLAYER_SYMBOLS
 
 EMAIL_PATTERN=re.compile(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
@@ -60,3 +62,11 @@ def game_state(game, message=None):
 
 def error_response(message, status):
     return {"error": message}, status
+
+#<========LOGGING========>
+def log_to_db(message: str):
+    log_doc={
+        "timestamp": datetime.utcnow().isoformat(),
+        "message": message
+    }
+    logs_collection.insert_one(log_doc)
