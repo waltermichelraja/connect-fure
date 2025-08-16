@@ -13,6 +13,7 @@ db=client["connectfure_db"]
 
 users_collection=db["users"]
 games_collection=db["games"]
+logs_collection = db["logs"]
 
 users_collection.create_index("email", unique=True)
 users_collection.create_index("username", unique=True)
