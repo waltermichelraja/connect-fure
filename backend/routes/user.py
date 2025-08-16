@@ -45,7 +45,9 @@ def create_user():
     user=User(email, username, hashed_pw)
     users_collection.insert_one(user.to_dict())
 
-    logging.info(f"user created: {username} [{user.id}] with email {email}")
+    logging.info(f"user created: {username} [{user.id}] [{email}]")
+    #log_to_db() -> activate at production
+
     return {
         "id": user.id,
         "email": email,

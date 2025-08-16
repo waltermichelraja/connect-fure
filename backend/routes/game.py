@@ -24,6 +24,7 @@ def create_game():
     users_collection.update_one({"_id": p2}, {"$push": {"games": game.id}})
 
     logging.info(f"game created: {game.id} between {p1} and {p2}")
+    #log_to_db() -> activate at production
     return game_state(game)
 
 
@@ -68,7 +69,8 @@ def play_game(game_id):
             "move_history": game.move_history
         }}
     )
-    logging.info(f"move: player {player_id} in game {game_id} => column {col}")
+    logging.info(f"move: player {player_id} [{col}] in game {game_id}")
+    #log_to_db() -> activate at production
     return game_state(game, message)
 
 
@@ -91,4 +93,5 @@ def restart_game(game_id):
         }}
     )
     logging.info(f"game restarted: {game_id}")
+    #log_to_db() -> activate at production
     return game_state(game, "game restarted")
