@@ -15,23 +15,16 @@ def create_game():
     if not (p1 and p2):
         return error_response("both player IDs required", 400)
 
-    if not users_collection.find_one({"_id": p1}) or not users_collection.find_one({"_id": p2}):
+    if not users_collection.find_one({"_id": p1}) or not users_collection.find_one({"_id": p2}) or p1==p2:
         return error_response("invalid player ID(s)", 400)
 
     game=Connect4(p1, p2)
-    games_collection.insert_one({
-        "_id": game.id,
-        "players": game.players,
-        "board": game.board,
-        "turn": game.turn,
-        "winner": game.winner,
-        "status": game.status,
-        "move_history": game.move_history
-    })
+    games_collection.insert_one(game.to_dict())
     users_collection.update_one({"_id": p1}, {"$push": {"games": game.id}})
     users_collection.update_one({"_id": p2}, {"$push": {"games": game.id}})
 
     logging.info(f"game created: {game.id} between {p1} and {p2}")
+    #log_to_db() -> activate at production
     return game_state(game)
 
 
@@ -62,7 +55,7 @@ def play_game(game_id):
         return error_response("invalid player ID", 400)
 
     game=Connect4.from_dict(game_doc)
-    success, message = game.play(player_id, col)
+    success, message=game.play(player_id, col)
     if not success:
         return error_response(message, 400)
     
@@ -76,7 +69,8 @@ def play_game(game_id):
             "move_history": game.move_history
         }}
     )
-    logging.info(f"move: player {player_id} in game {game_id} => column {col}")
+    logging.info(f"move: player {player_id} [{col}] in game {game_id}")
+    #log_to_db() -> activate at production
     return game_state(game, message)
 
 
@@ -99,4 +93,5 @@ def restart_game(game_id):
         }}
     )
     logging.info(f"game restarted: {game_id}")
+    #log_to_db() -> activate at production
     return game_state(game, "game restarted")
