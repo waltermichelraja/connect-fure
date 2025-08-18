@@ -15,6 +15,10 @@ class User:
         self.username=username
         self.password=password
         self.games=[]
+        self.wins=0
+        self.losses=0
+        self.draws=0
+        self.achievements=[]
     
     def to_dict(self):
         return {
