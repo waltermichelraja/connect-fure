@@ -54,3 +54,13 @@ def create_user():
         "username": user.username,
         "message": "user created successfully."
     }
+
+@user_bp.route("/leaderboard", methods=["GET"])
+def leaderboard():
+    top=list(users_collection.find(
+        {}, {"username": 1, "wins": 1, "losses": 1, "draws": 1}
+    ).sort("wins", -1).limit(10))
+
+    for u in top:
+        u["_id"]=str(u["_id"])
+    return {"leaderboard": top}
