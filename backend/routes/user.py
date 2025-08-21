@@ -55,6 +55,23 @@ def create_user():
         "message": "user created successfully."
     }
 
+@user_bp.route("/user/<user_id>/profile", methods=["GET"])
+def user_stats(user_id):
+    user=users_collection.find_one({"_id": user_id})
+    if not user:
+        return error_response("user not found", 404)
+    stats={
+        "username": user["username"],
+        "wins": user.get("wins", 0),
+        "losses": user.get("losses", 0),
+        "draws": user.get("draws", 0),
+        "games_played": len(user.get("games", [])),
+        "achievements": user.get("achievements", [])
+        #recent games...
+    }
+    return stats
+
+
 @user_bp.route("/leaderboard", methods=["GET"])
 def leaderboard():
     top=list(users_collection.find(
