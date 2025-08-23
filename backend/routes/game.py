@@ -43,18 +43,18 @@ def play_game(game_id):
     game_doc=games_collection.find_one({"_id": game_id})
     if not game_doc:
         return error_response("game not found", 404)
-
     data=request.json
     player_id=data.get("player_id")
     try:
         col=int(data.get("column"))
-    except(ValueError, TypeError):
+    except (ValueError, TypeError):
         return error_response("column must be an integer", 400)
-
     if not users_collection.find_one({"_id": player_id}):
         return error_response("invalid player ID", 400)
-
     game=Connect4.from_dict(game_doc)
+
+    if player_id not in game.players:
+        return error_response("player not part of this game", 403)
     success, message=game.play(player_id, col)
     if not success:
         return error_response(message, 400)
@@ -86,8 +86,10 @@ def play_game(game_id):
                     {"_id": p},
                     {"$inc": {"draws": 1}}
                 )
-    logging.info(f"move: player {player_id} [{col}] in game {game_id}")
-    #log_to_db() -> activate at production
+        logging.info(f"game {game_id} ended | winner: {game.winner or 'draw'}")
+
+    logging.info(f"Move: player {player_id} -> column {col} in game {game_id}")
+    # log_to_db(...) # for production
     return game_state(game, message)
 
 
