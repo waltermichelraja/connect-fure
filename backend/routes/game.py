@@ -24,7 +24,7 @@ def create_game():
     users_collection.update_one({"_id": p2}, {"$push": {"games": game.id}})
 
     logging.info(f"game created: {game.id} between {p1} and {p2}")
-    #log_to_db() -> activate at production
+    # log_to_db(...) # for production
     return game_state(game)
 
 
@@ -112,5 +112,5 @@ def restart_game(game_id):
         }}
     )
     logging.info(f"game restarted: {game_id}")
-    #log_to_db() -> activate at production
+    # log_to_db(...) # for production
     return game_state(game, "game restarted")
