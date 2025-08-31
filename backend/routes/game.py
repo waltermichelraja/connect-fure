@@ -24,7 +24,7 @@ def create_game():
     users_collection.update_one({"_id": p2}, {"$push": {"games": game.id}})
 
     logging.info(f"game created: {game.id} between {p1} and {p2}")
-    #log_to_db() -> activate at production
+    # log_to_db(...) # for production
     return game_state(game)
 
 
@@ -43,18 +43,18 @@ def play_game(game_id):
     game_doc=games_collection.find_one({"_id": game_id})
     if not game_doc:
         return error_response("game not found", 404)
-
     data=request.json
     player_id=data.get("player_id")
     try:
         col=int(data.get("column"))
-    except(ValueError, TypeError):
+    except (ValueError, TypeError):
         return error_response("column must be an integer", 400)
-
     if not users_collection.find_one({"_id": player_id}):
         return error_response("invalid player ID", 400)
-
     game=Connect4.from_dict(game_doc)
+
+    if player_id not in game.players:
+        return error_response("player not part of this game", 403)
     success, message=game.play(player_id, col)
     if not success:
         return error_response(message, 400)
@@ -69,8 +69,27 @@ def play_game(game_id):
             "move_history": game.move_history
         }}
     )
-    logging.info(f"move: player {player_id} [{col}] in game {game_id}")
-    #log_to_db() -> activate at production
+    if game.status==-1:
+        if game.winner:
+            users_collection.update_one(
+                {"_id": game.winner},
+                {"$inc": {"wins": 1}}
+            )
+            loser=[p for p in game.players if p!=game.winner][0]
+            users_collection.update_one(
+                {"_id": loser},
+                {"$inc": {"losses": 1}}
+            )
+        else:
+            for p in game.players:
+                users_collection.update_one(
+                    {"_id": p},
+                    {"$inc": {"draws": 1}}
+                )
+        logging.info(f"game {game_id} ended | winner: {game.winner or 'draw'}")
+
+    logging.info(f"Move: player {player_id} -> column {col} in game {game_id}")
+    # log_to_db(...) # for production
     return game_state(game, message)
 
 
@@ -93,5 +112,5 @@ def restart_game(game_id):
         }}
     )
     logging.info(f"game restarted: {game_id}")
-    #log_to_db() -> activate at production
+    # log_to_db(...) # for production
     return game_state(game, "game restarted")
